@@ -1,18 +1,19 @@
 package MkIt::Item::Base::Resistor;
 use Moose;
 use MooseX::StrictConstructor;
-use MkIt::Attribute::Linear;
-use MkIt::Attribute::Choice;
+use MkIt::Attribute::Linear::Ohm;
+use MkIt::Attribute::Linear::Watt;
+use MkIt::Attribute::Choice::ResistorPackage;
 
 extends 'MkIt::Item::Base';
 
-has 'resistance', is => 'ro', isa => 'MkIt::Attribute::Linear[ohm]';
-has 'power', is => 'ro', isa => 'MkIt::Attribute::Linear[watt]';
-has 'package', is => 'ro', isa => 'MkIt::Attribute::Choice';
+has 'resistance', is => 'ro', isa => 'MkIt::Attribute::Linear::Ohm', coerce => 1;
+has 'power', is => 'ro', isa => 'MkIt::Attribute::Linear::Watt', coerce => 1;
+has 'package', is => 'ro', isa => 'MkIt::Attribute::Choice::ResistorPackage', coerce => 1;
 has '+name', default => sub {
   my ($self) = @_;
   
-  join " ", $self->resistance, $self->power, $self->package, 'resistor';
+  join " ", grep {$_} ($self->resistance, $self->power, $self->package, 'resistor');
 };
 
 #MkIt::Attribute::Linear[watt]

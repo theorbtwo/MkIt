@@ -26,8 +26,8 @@ has 'max', is => 'ro', isa => 'Maybe[Num]';
 # FIXME: This seems to duplicate coerce.  How do I avoid that?
 sub BUILDARGS {
   my ($class, @rest) = @_;
-  #warn "BUILDARGS: @rest";
-  #warn "wantarray: ".wantarray;
+  warn "BUILDARGS for $class: @rest";
+  warn "wantarray: ".wantarray;
   # We only want the case of a single argument which isn't blessed.  Let normal moose
   # mechanisms handle weird stuff.
   if (@rest == 0 or blessed $rest[0]) {
