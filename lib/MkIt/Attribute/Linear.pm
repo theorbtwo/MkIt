@@ -9,8 +9,8 @@ use overload
 # extends 'Moose::Meta::TypeConstraint::Parameterizable';
 # Moose::Util::TypeConstraints::add_parameterizable_type(__PACKAGE__);
 
-has 'min', is => 'ro', isa => 'Num';
-has 'max', is => 'ro', isa => 'Num';
+has 'min', is => 'ro', isa => 'Maybe[Num]';
+has 'max', is => 'ro', isa => 'Maybe[Num]';
 
 # coerce(__PACKAGE__,
 #        ArrayRef => sub {
@@ -26,8 +26,8 @@ has 'max', is => 'ro', isa => 'Num';
 # FIXME: This seems to duplicate coerce.  How do I avoid that?
 sub BUILDARGS {
   my ($class, @rest) = @_;
-  warn "BUILDARGS: @rest";
-  warn "wantarray: ".wantarray;
+  #warn "BUILDARGS: @rest";
+  #warn "wantarray: ".wantarray;
   # We only want the case of a single argument which isn't blessed.  Let normal moose
   # mechanisms handle weird stuff.
   if (@rest == 0 or blessed $rest[0]) {
@@ -57,14 +57,17 @@ sub string {
   my ($self) = @_;
 
   # Fixme: prefixes.
-  if ($self->min == $self->max) {
-    return $self->min." ".$self->symbol;
-  } elsif (not defined $self->min and not defined $self->max) {
+  if (!defined $self->min and !defined $self->max) {
     return undef;
-  } elsif (not defined $self->min) {
+
+  } elsif (not defined $self->min and defined $self->max) {
     return "at most ".$self->max." ".$self->symbol;
-  } elsif (not defined $self->max) {
+  } elsif (defined $self->min and not defined $self->max) {
     return "at least ".$self->min." ".$self->symbol;
+
+  } elsif ($self->min == $self->max) {
+    return $self->min." ".$self->symbol;
+
   } else {
     # What do I do when I sing out of tune.
     # ...or when min and max have different prefixes.

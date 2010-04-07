@@ -16,3 +16,6 @@ my $range = MkIt::Attribute::Linear::Ohm->new([1, 5]);
 isa_ok($range, 'MkIt::Attribute::Linear::Ohm');
 is($range, '1 to 5 ohm');
 
+my $at_most = MkIt::Attribute::Linear::Ohm->new([undef, 5]);
+isa_ok($at_most, 'MkIt::Attribute::Linear::Ohm');
+is($at_most, 'at most 5 ohm');
